@@ -21,14 +21,14 @@ namespace Snake
         public String type;
         public Bitmap Im;
     }
-    public class Apple
+    public class Battery
     {
         public int X, Y;
         public int W, H;
         public int R, C;
         public Bitmap Im;
     }
-    public class Snake
+    public class Robot
     {
         public int X, Y;
         public int Xold, Yold;
@@ -51,11 +51,11 @@ namespace Snake
         const int N = 20;
         Random RR = new Random();
         Random RC = new Random();
-        Apple Apple = new Apple();
+        Battery Battery = new Battery();
         int CF = 1, Moved = 0;
         CActor[,] B = new CActor[N, N];
         CActor MyMove = new CActor();
-        List<Snake> Snake = new List<Snake>();
+        List<Robot> Robot = new List<Robot>();
         List<CActor> Moves = new List<CActor>();
         Stack<CActor> path = new Stack<CActor>();
         List<node> nodes = new List<node>();
@@ -101,109 +101,40 @@ namespace Snake
 
         private void TT_Tick(object sender, EventArgs e)
         {
-            MoveSnake();
-            if (Right == true && Snake[0].C != N-1)
+            if (Right == true && Robot[0].C != N-1)
             {
                 //CurrentMove = 'R';
-                Snake[0].C++;
-                Snake[0].X = B[Snake[0].R, Snake[0].C].X;
-                //Snake[0].Im = new Bitmap("Robo.png");
+                Robot[0].C++;
+                Robot[0].X = B[Robot[0].R, Robot[0].C].X;
                 Right = false;
             }
-            if (Left == true && Snake[0].C != 0)
+            if (Left == true && Robot[0].C != 0)
             {
                 //CurrentMove = 'L';
-                Snake[0].C--;
-                Snake[0].X = B[Snake[0].R, Snake[0].C].X;
-                //Snake[0].Im = new Bitmap("Robo.png");
+                Robot[0].C--;
+                Robot[0].X = B[Robot[0].R, Robot[0].C].X;
                 Left = false;
             }
-            if (Up == true && Snake[0].R != 0)
+            if (Up == true && Robot[0].R != 0)
             {
                 //CurrentMove = 'U';
-                Snake[0].R--;
-                Snake[0].Y = B[Snake[0].R, Snake[0].C].Y;
-                //Snake[0].Im = new Bitmap("Robo.png");
+                Robot[0].R--;
+                Robot[0].Y = B[Robot[0].R, Robot[0].C].Y;
                 Up = false;
             }
-            if (Down == true && Snake[0].R !=N-1)
+            if (Down == true && Robot[0].R !=N-1)
             {
-                //CurrentMove = 'D';
-                Snake[0].R++;
-                Snake[0].Y = B[Snake[0].R, Snake[0].C].Y;
-                //Snake[0].Im = new Bitmap("Robo.png");
+                Robot[0].R++;
+                Robot[0].Y = B[Robot[0].R, Robot[0].C].Y;
                 Down = false;
             }
-            /*if (CurrentMove == 'R' && LastMove == 'R')
+           
+            if (Robot[0].R == Battery.R && Robot[0].C == Battery.C)
             {
-                Snake[1].Im = new Bitmap("4.png");
-            }
-            if (CurrentMove == 'R' && LastMove == 'U')
-            {
-                Snake[1].Im = new Bitmap("9.png");
-            }
-            if (CurrentMove == 'R' && LastMove == 'D')
-            {
-                Snake[1].Im = new Bitmap("7.png");
-            }
-            if (CurrentMove == 'L' && LastMove == 'L')
-            {
-                Snake[1].Im = new Bitmap("4.png");
-            }
-            if (CurrentMove == 'L' && LastMove == 'U')
-            {
-                Snake[1].Im = new Bitmap("8.png");
-            }
-            if (CurrentMove == 'L' && LastMove == 'D')
-            {
-                Snake[1].Im = new Bitmap("6.png");
-            }
-            if (CurrentMove == 'D' && LastMove == 'D')
-            {
-                Snake[1].Im = new Bitmap("5.png");
-            }
-            if (CurrentMove == 'D' && LastMove == 'R')
-            {
-                Snake[1].Im = new Bitmap("8.png");
-            }
-            if (CurrentMove == 'D' && LastMove == 'L')
-            {
-                Snake[1].Im = new Bitmap("9.png");
-            }
-            if (CurrentMove == 'U' && LastMove == 'U')
-            {
-                Snake[1].Im = new Bitmap("5.png");
-            }
-            if (CurrentMove == 'U' && LastMove == 'R')
-            {
-                Snake[1].Im = new Bitmap("6.png");
-            }
-            if (CurrentMove == 'U' && LastMove == 'L')
-            {
-                Snake[1].Im = new Bitmap("7.png");
-            }*/
-            if (Snake[0].R == Apple.R && Snake[0].C == Apple.C)
-            {
-                //UpdateSnakeBody();
-                CreateApple();
+                CreateBattery();
             }
             DrawDubb(this.CreateGraphics());
-            /*if (Right == true)
-            {
-                LastMove = 'R';
-            }
-            if (Left == true)
-            {
-                LastMove = 'L';
-            }
-            if (Up == true)
-            {
-                LastMove = 'U';
-            }
-            if (Down == true)
-            {
-                LastMove = 'D';
-            }*/
+
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
@@ -244,7 +175,7 @@ namespace Snake
                     MessageBox.Show("[" + nodes[i].R + "," + nodes[i].C + "] " + nodes[i].nodeType);
                 }*/
             }
-            Apple.Im = new Bitmap("Battery.png");
+            Battery.Im = new Bitmap("Battery.png");
         }
         bool isValid(int row, int col)
         {
@@ -259,25 +190,13 @@ namespace Snake
                 return false;
             }
         }
-        void MoveSnake()
-        {
-            /*for (int i = Snake.Count - 1; i > 0; i--)
-            {
-                Snake[i].X = Snake[i - 1].X;
-                Snake[i].Y = Snake[i - 1].Y;
-            }
-            for (int i = Snake.Count - 2; i > 1; i--)
-            {
-                Snake[i].Im = Snake[i - 1].Im;
-            }*/
-        }
         void GenerateValues()
         {
             int val = 0;
             int index = 0;
-            for (int i = Apple.R; i < N; i++)
+            for (int i = Battery.R; i < N; i++)
             {
-                for (int j = Apple.C; j < N; j++)
+                for (int j = Battery.C; j < N; j++)
                 {
                     node state = new node();
                     state.R = i;
@@ -293,9 +212,9 @@ namespace Snake
             }
             val = 1;
             index = 1;
-            for (int i = Apple.R - 1; i > -1; i--)
+            for (int i = Battery.R - 1; i > -1; i--)
             {
-                for (int j = Apple.C; j < N; j++)
+                for (int j = Battery.C; j < N; j++)
                 {
                     node state = new node();
                     state.R = i;
@@ -311,9 +230,9 @@ namespace Snake
             }
             val = 1;
             index = 1;
-            for (int i = Apple.R; i < N; i++)
+            for (int i = Battery.R; i < N; i++)
             {
-                for (int j = Apple.C-1; j > -1; j--)
+                for (int j = Battery.C-1; j > -1; j--)
                 {
                     node state = new node();
                     state.R = i;
@@ -329,9 +248,9 @@ namespace Snake
             }
             val = 2;
             index = 2;
-            for (int i = Apple.R-1; i > -1 ; i--)
+            for (int i = Battery.R-1; i > -1 ; i--)
             {
-                for (int j = Apple.C-1; j > -1; j--)
+                for (int j = Battery.C-1; j > -1; j--)
                 {
                     node state = new node();
                     state.R = i;
@@ -353,32 +272,13 @@ namespace Snake
                 }
             }
         }
-        void KillSnake()
+  
+        void CreateBattery()
         {
-            for(int i=1;i<Snake.Count;i++)
-            {
-                if(Snake[0].R == Snake[i].R && Snake[0].C == Snake[i].C)
-                {
-                    MessageBox.Show("LOSE!");
-                }
-            }
-        }
-        void UpdateSnakeBody()
-        {
-            Snake pnn = new Snake();
-            pnn.X = Snake[Snake.Count - 1].X;
-            pnn.Y = Snake[Snake.Count - 1].Y;
-            Snake[Snake.Count - 1].Im = new Bitmap("4.png");
-            pnn.Im = new Bitmap("10.png");
-            Snake.Add(pnn);
-
-        }
-        void CreateApple()
-        {
-            Apple.R = 19;
-            Apple.C = 10;
-            Apple.X = B[Apple.R, Apple.C].X;
-            Apple.Y = B[Apple.R, Apple.C].Y;
+            Battery.R = 19;
+            Battery.C = 10;
+            Battery.X = B[Battery.R, Battery.C].X;
+            Battery.Y = B[Battery.R, Battery.C].Y;
             nodes.Clear();
             GenerateValues();
             DeclareTypes();
@@ -394,12 +294,12 @@ namespace Snake
             {
                 nodes[i].nodeType = "";
                 B[nodes[i].R, nodes[i].C].type = "";
-                if(nodes[i].R == Apple.R && nodes[i].C == Apple.C)
+                if(nodes[i].R == Battery.R && nodes[i].C == Battery.C)
                 {
                     nodes[i].nodeType = "G";
                     B[nodes[i].R, nodes[i].C].type = "G";
                 }
-                if(nodes[i].R == Snake[0].R && nodes[i].C == Snake[0].C)
+                if(nodes[i].R == Robot[0].R && nodes[i].C == Robot[0].C)
                 {
                     nodes[i].nodeType = "S";
                     B[nodes[i].R, nodes[i].C].type = "S";
@@ -410,21 +310,21 @@ namespace Snake
         void MoveRobot()
         {
             int Action = 0;
-            if(Snake[0].R == 0 && Snake[0].C == 0) //Upper Left Corner
+            if(Robot[0].R == 0 && Robot[0].C == 0) //Upper Left Corner
             {
                 int min = 9999;
-                if(B[Snake[0].R + 1,Snake[0].C].type != "C")
+                if(B[Robot[0].R + 1,Robot[0].C].type != "C")
                 {
                     CActor Move = new CActor();
-                    Move.R = Snake[0].R + 1;
-                    Move.C = Snake[0].C;
+                    Move.R = Robot[0].R + 1;
+                    Move.C = Robot[0].C;
                     Moves.Add(Move);
                 }
-                if (B[Snake[0].R, Snake[0].C+1].type != "C")
+                if (B[Robot[0].R, Robot[0].C+1].type != "C")
                 {
                     CActor Move = new CActor();
-                    Move.R = Snake[0].R;
-                    Move.C = Snake[0].C + 1;
+                    Move.R = Robot[0].R;
+                    Move.C = Robot[0].C + 1;
                     Move.h = B[Move.R, Move.C].h;
                     Moves.Add(Move);
                 }
@@ -436,26 +336,26 @@ namespace Snake
                         MyMove = Moves[i];
                     }
                 }
-                Snake[0].R = MyMove.R;
-                Snake[0].C = MyMove.C;
+                Robot[0].R = MyMove.R;
+                Robot[0].C = MyMove.C;
                 Action = 1;
             }
             Moves.Clear();
-            if (Snake[0].R == 0 && Snake[0].C == N && Action == 0) //Upper Right Corner
+            if (Robot[0].R == 0 && Robot[0].C == N && Action == 0) //Upper Right Corner
             {
                 int min = 9999;
-                if (B[Snake[0].R + 1, Snake[0].C].type != "C")
+                if (B[Robot[0].R + 1, Robot[0].C].type != "C")
                 {
                     CActor Move = new CActor();
-                    Move.R = Snake[0].R + 1;
-                    Move.C = Snake[0].C;
+                    Move.R = Robot[0].R + 1;
+                    Move.C = Robot[0].C;
                     Moves.Add(Move);
                 }
-                if (B[Snake[0].R, Snake[0].C - 1].type != "C")
+                if (B[Robot[0].R, Robot[0].C - 1].type != "C")
                 {
                     CActor Move = new CActor();
-                    Move.R = Snake[0].R;
-                    Move.C = Snake[0].C-1;
+                    Move.R = Robot[0].R;
+                    Move.C = Robot[0].C-1;
                     Move.h = B[Move.R, Move.C].h;
                     Moves.Add(Move);
                 }
@@ -467,27 +367,27 @@ namespace Snake
                         MyMove = Moves[i];
                     }
                 }
-                Snake[0].R = MyMove.R;
-                Snake[0].C = MyMove.C;
+                Robot[0].R = MyMove.R;
+                Robot[0].C = MyMove.C;
                 Action = 1;
 
             }
             Moves.Clear();
-            if (Snake[0].R == N && Snake[0].C == 0 && Action == 0) //Lower Left Corner
+            if (Robot[0].R == N && Robot[0].C == 0 && Action == 0) //Lower Left Corner
             {
                 int min = 9999;
-                if (B[Snake[0].R - 1, Snake[0].C].type != "C")
+                if (B[Robot[0].R - 1, Robot[0].C].type != "C")
                 {
                     CActor Move = new CActor();
-                    Move.R = Snake[0].R - 1;
-                    Move.C = Snake[0].C;
+                    Move.R = Robot[0].R - 1;
+                    Move.C = Robot[0].C;
                     Moves.Add(Move);
                 }
-                if (B[Snake[0].R, Snake[0].C + 1].type != "C")
+                if (B[Robot[0].R, Robot[0].C + 1].type != "C")
                 {
                     CActor Move = new CActor();
-                    Move.R = Snake[0].R;
-                    Move.C = Snake[0].C + 1;
+                    Move.R = Robot[0].R;
+                    Move.C = Robot[0].C + 1;
                     Move.h = B[Move.R, Move.C].h;
                     Moves.Add(Move);
                 }
@@ -499,27 +399,27 @@ namespace Snake
                         MyMove = Moves[i];
                     }
                 }
-                Snake[0].R = MyMove.R;
-                Snake[0].C = MyMove.C;
+                Robot[0].R = MyMove.R;
+                Robot[0].C = MyMove.C;
                 Action = 1;
 
             }
             Moves.Clear();
-            if (Snake[0].R == N && Snake[0].C == N && Action == 0) //Lower Right Corner
+            if (Robot[0].R == N && Robot[0].C == N && Action == 0) //Lower Right Corner
             {
                 int min = 9999;
-                if (B[Snake[0].R - 1, Snake[0].C].type != "C")
+                if (B[Robot[0].R - 1, Robot[0].C].type != "C")
                 {
                     CActor Move = new CActor();
-                    Move.R = Snake[0].R - 1;
-                    Move.C = Snake[0].C;
+                    Move.R = Robot[0].R - 1;
+                    Move.C = Robot[0].C;
                     Moves.Add(Move);
                 }
-                if (B[Snake[0].R, Snake[0].C - 1].type != "C")
+                if (B[Robot[0].R, Robot[0].C - 1].type != "C")
                 {
                     CActor Move = new CActor();
-                    Move.R = Snake[0].R;
-                    Move.C = Snake[0].C - 1;
+                    Move.R = Robot[0].R;
+                    Move.C = Robot[0].C - 1;
                     Move.h = B[Move.R, Move.C].h;
                     Moves.Add(Move);
                 }
@@ -531,36 +431,36 @@ namespace Snake
                         MyMove = Moves[i];
                     }
                 }
-                Snake[0].R = MyMove.R;
-                Snake[0].C = MyMove.C;
+                Robot[0].R = MyMove.R;
+                Robot[0].C = MyMove.C;
                 Action = 1;
 
             }
             Moves.Clear();
-            if (Snake[0].R == 0 && Snake[0].C > 0 && Action == 0) //Upper Row
+            if (Robot[0].R == 0 && Robot[0].C > 0 && Action == 0) //Upper Row
             {
                 int min = 9999;
-                if (B[Snake[0].R + 1, Snake[0].C].type != "C")
+                if (B[Robot[0].R + 1, Robot[0].C].type != "C")
                 {
                     CActor Move = new CActor();
-                    Move.R = Snake[0].R + 1;
-                    Move.C = Snake[0].C;
+                    Move.R = Robot[0].R + 1;
+                    Move.C = Robot[0].C;
                     Move.h = B[Move.R, Move.C].h;
                     Moves.Add(Move);
                 }
-                if (B[Snake[0].R, Snake[0].C - 1].type != "C")
+                if (B[Robot[0].R, Robot[0].C - 1].type != "C")
                 {
                     CActor Move = new CActor();
-                    Move.R = Snake[0].R;
-                    Move.C = Snake[0].C - 1;
+                    Move.R = Robot[0].R;
+                    Move.C = Robot[0].C - 1;
                     Move.h = B[Move.R, Move.C].h;
                     Moves.Add(Move);
                 }
-                if (B[Snake[0].R, Snake[0].C + 1].type != "C")
+                if (B[Robot[0].R, Robot[0].C + 1].type != "C")
                 {
                     CActor Move = new CActor();
-                    Move.R = Snake[0].R;
-                    Move.C = Snake[0].C + 1;
+                    Move.R = Robot[0].R;
+                    Move.C = Robot[0].C + 1;
                     Move.h = B[Move.R, Move.C].h;
                     Moves.Add(Move);
                 }
@@ -572,36 +472,36 @@ namespace Snake
                         MyMove = Moves[i];
                     }
                 }
-                Snake[0].R = MyMove.R;
-                Snake[0].C = MyMove.C;
+                Robot[0].R = MyMove.R;
+                Robot[0].C = MyMove.C;
                 Action = 1;
 
             }
             Moves.Clear();
-            if (Snake[0].R == N && Snake[0].C > 0 && Action == 0) //Lower Row
+            if (Robot[0].R == N && Robot[0].C > 0 && Action == 0) //Lower Row
             {
                 int min = 9999;
-                if (B[Snake[0].R - 1, Snake[0].C].type != "C")
+                if (B[Robot[0].R - 1, Robot[0].C].type != "C")
                 {
                     CActor Move = new CActor();
-                    Move.R = Snake[0].R - 1;
-                    Move.C = Snake[0].C;
+                    Move.R = Robot[0].R - 1;
+                    Move.C = Robot[0].C;
                     Move.h = B[Move.R, Move.C].h;
                     Moves.Add(Move);
                 }
-                if (B[Snake[0].R, Snake[0].C - 1].type != "C")
+                if (B[Robot[0].R, Robot[0].C - 1].type != "C")
                 {
                     CActor Move = new CActor();
-                    Move.R = Snake[0].R;
-                    Move.C = Snake[0].C - 1;
+                    Move.R = Robot[0].R;
+                    Move.C = Robot[0].C - 1;
                     Move.h = B[Move.R, Move.C].h;
                     Moves.Add(Move);
                 }
-                if (B[Snake[0].R, Snake[0].C + 1].type != "C")
+                if (B[Robot[0].R, Robot[0].C + 1].type != "C")
                 {
                     CActor Move = new CActor();
-                    Move.R = Snake[0].R;
-                    Move.C = Snake[0].C + 1;
+                    Move.R = Robot[0].R;
+                    Move.C = Robot[0].C + 1;
                     Move.h = B[Move.R, Move.C].h;
                     Moves.Add(Move);
                 }
@@ -613,36 +513,36 @@ namespace Snake
                         MyMove = Moves[i];
                     }
                 }
-                Snake[0].R = MyMove.R;
-                Snake[0].C = MyMove.C;
+                Robot[0].R = MyMove.R;
+                Robot[0].C = MyMove.C;
                 Action = 1;
 
             }
             Moves.Clear();
-            if (Snake[0].R > 0 && Snake[0].C == 0 && Action == 0) //Left most Column
+            if (Robot[0].R > 0 && Robot[0].C == 0 && Action == 0) //Left most Column
             {
                 int min = 9999;
-                if (B[Snake[0].R - 1, Snake[0].C].type != "C")
+                if (B[Robot[0].R - 1, Robot[0].C].type != "C")
                 {
                     CActor Move = new CActor();
-                    Move.R = Snake[0].R - 1;
-                    Move.C = Snake[0].C;
+                    Move.R = Robot[0].R - 1;
+                    Move.C = Robot[0].C;
                     Move.h = B[Move.R, Move.C].h;
                     Moves.Add(Move);
                 }
-                if (B[Snake[0].R + 1, Snake[0].C].type != "C")
+                if (B[Robot[0].R + 1, Robot[0].C].type != "C")
                 {
                     CActor Move = new CActor();
-                    Move.R = Snake[0].R + 1;
-                    Move.C = Snake[0].C;
+                    Move.R = Robot[0].R + 1;
+                    Move.C = Robot[0].C;
                     Move.h = B[Move.R, Move.C].h;
                     Moves.Add(Move);
                 }
-                if (B[Snake[0].R, Snake[0].C + 1].type != "C")
+                if (B[Robot[0].R, Robot[0].C + 1].type != "C")
                 {
                     CActor Move = new CActor();
-                    Move.R = Snake[0].R;
-                    Move.C = Snake[0].C + 1;
+                    Move.R = Robot[0].R;
+                    Move.C = Robot[0].C + 1;
                     Move.h = B[Move.R, Move.C].h;
                     Moves.Add(Move);
                 }
@@ -654,36 +554,36 @@ namespace Snake
                         MyMove = Moves[i];
                     }
                 }
-                Snake[0].R = MyMove.R;
-                Snake[0].C = MyMove.C;
+                Robot[0].R = MyMove.R;
+                Robot[0].C = MyMove.C;
                 Action = 1;
 
             }
             Moves.Clear();
-            if (Snake[0].R > 0 && Snake[0].C == N && Action == 0) //Right most Column
+            if (Robot[0].R > 0 && Robot[0].C == N && Action == 0) //Right most Column
             {
                 int min = 9999;
-                if (B[Snake[0].R - 1, Snake[0].C].type != "C")
+                if (B[Robot[0].R - 1, Robot[0].C].type != "C")
                 {
                     CActor Move = new CActor();
-                    Move.R = Snake[0].R - 1;
-                    Move.C = Snake[0].C;
+                    Move.R = Robot[0].R - 1;
+                    Move.C = Robot[0].C;
                     Move.h = B[Move.R, Move.C].h;
                     Moves.Add(Move);
                 }
-                if (B[Snake[0].R + 1, Snake[0].C].type != "C")
+                if (B[Robot[0].R + 1, Robot[0].C].type != "C")
                 {
                     CActor Move = new CActor();
-                    Move.R = Snake[0].R + 1;
-                    Move.C = Snake[0].C;
+                    Move.R = Robot[0].R + 1;
+                    Move.C = Robot[0].C;
                     Move.h = B[Move.R, Move.C].h;
                     Moves.Add(Move);
                 }
-                if (B[Snake[0].R, Snake[0].C - 1].type != "C")
+                if (B[Robot[0].R, Robot[0].C - 1].type != "C")
                 {
                     CActor Move = new CActor();
-                    Move.R = Snake[0].R;
-                    Move.C = Snake[0].C - 1;
+                    Move.R = Robot[0].R;
+                    Move.C = Robot[0].C - 1;
                     Move.h = B[Move.R, Move.C].h;
                     Moves.Add(Move);
                 }
@@ -695,11 +595,11 @@ namespace Snake
                         MyMove = Moves[i];
                     }
                 }
-                Snake[0].R = MyMove.R;
-                Snake[0].C = MyMove.C;
+                Robot[0].R = MyMove.R;
+                Robot[0].C = MyMove.C;
                 Action = 1;
             }
-            MessageBox.Show("Moved to " + Snake[0].R + "," + Snake[0].C);
+            MessageBox.Show("Moved to " + Robot[0].R + "," + Robot[0].C);
 
         }
         void sortMyList()
@@ -729,13 +629,13 @@ namespace Snake
         {
             int R, C;
             //Intialize Start
-            B[Snake[0].R, Snake[0].C].h = 0;
-            B[Snake[0].R, Snake[0].C].g = 0;
-            B[Snake[0].R, Snake[0].C].f = 0;
-            B[Snake[0].R, Snake[0].C].parent_r = Snake[0].R;
-            B[Snake[0].R, Snake[0].C].parent_c = Snake[0].C;
+            B[Robot[0].R, Robot[0].C].h = 0;
+            B[Robot[0].R, Robot[0].C].g = 0;
+            B[Robot[0].R, Robot[0].C].f = 0;
+            B[Robot[0].R, Robot[0].C].parent_r = Robot[0].R;
+            B[Robot[0].R, Robot[0].C].parent_c = Robot[0].C;
             bool foundDest = false;
-            openList.Add(B[Snake[0].R, Snake[0].C]);
+            openList.Add(B[Robot[0].R, Robot[0].C]);
 
             while (openList.Count != 0)
             {
@@ -894,8 +794,8 @@ namespace Snake
             {
                 CActor P = path.Peek();
                 B[P.R, P.C].clr = Color.FromArgb(232, 184, 26);
-                Snake[0].X = B[P.R, P.C].X;
-                Snake[0].Y = B[P.R, P.C].Y;
+                Robot[0].X = B[P.R, P.C].X;
+                Robot[0].Y = B[P.R, P.C].Y;
                 path.Pop();
                 DrawDubb(this.CreateGraphics());
             }
@@ -911,11 +811,11 @@ namespace Snake
             }
             return false;
         }
-        void CreateSnake()
+        void CreateRobot()
         {
             for (int i = 0; i < 1; i++)
             {
-                Snake pnn = new Snake();
+                Robot pnn = new Robot();
                 if (i == 0)
                 {
                     pnn.R = 1;
@@ -940,7 +840,7 @@ namespace Snake
                     pnn.Y = B[pnn.R, pnn.C].Y;
                     pnn.Im = new Bitmap("10.png");
                 }*/
-                Snake.Add(pnn);
+                Robot.Add(pnn);
             }
         }
         void Create()
@@ -975,8 +875,8 @@ namespace Snake
         {
             off = new Bitmap(ClientSize.Width, ClientSize.Height);
             Create();
-            CreateSnake();
-            CreateApple();
+            CreateRobot();
+            CreateBattery();
         }
         void DrawScene(Graphics g)
         {
@@ -992,17 +892,17 @@ namespace Snake
                     FontFamily F = new FontFamily("Arial");
                     Font FF = new Font(F, 12, FontStyle.Regular);
                     //g.DrawImage(B[r, c].Im, B[r, c].X, B[r, c].Y, B[r, c].W, B[r, c].H);
-                    g.DrawString(B[r,c].h.ToString() , FF, Brushes.White, B[r,c].X + 3, B[r,c].Y + 3);
-                    g.DrawString(B[r,c].type , FF, Brushes.White, B[r,c].X, B[r,c].Y + 20);
+                    //g.DrawString(B[r,c].h.ToString() , FF, Brushes.White, B[r,c].X + 3, B[r,c].Y + 3);
+                    //g.DrawString(B[r,c].type , FF, Brushes.White, B[r,c].X, B[r,c].Y + 20);
 
                 }
 
             }
-            g.DrawImage(Apple.Im = new Bitmap("Battery1.png"), Apple.X, Apple.Y, B[0, 0].W, B[0, 0].H);
-            for (int i = 0; i < Snake.Count; i++)
+            g.DrawImage(Battery.Im = new Bitmap("Battery1.png"), Battery.X, Battery.Y, B[0, 0].W, B[0, 0].H);
+            for (int i = 0; i < Robot.Count; i++)
             {
   
-                g.DrawImage(Snake[i].Im, Snake[i].X, Snake[i].Y, B[0, 0].W, B[0, 0].H);
+                g.DrawImage(Robot[i].Im, Robot[i].X, Robot[i].Y, B[0, 0].W, B[0, 0].H);
             }
         }
         void DrawDubb(Graphics g)
