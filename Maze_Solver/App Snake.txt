@@ -1,0 +1,520 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace Snake
+{
+    public class CActor
+    {
+        public int X, Y;
+        public int W, H;
+        public int Value;
+        public Bitmap Im;
+        public Color clr;
+    }
+    public class Apple
+    {
+        public int X, Y;
+        public int W, H;
+        public int R, C;
+        public Bitmap Im;
+    }
+    public class Snake
+    {
+        public int X, Y;
+        public int Xold, Yold;
+        public int R, C;
+        public int W, H;
+        public int Speed;
+        public Bitmap Im;
+        public int Type = 0;
+        public bool Right, Left;
+    }
+    public class Button
+    {
+        public int X, Y;
+        public int W, H;
+        public int Type;
+        public bool Active = false;
+        public Bitmap Im;
+    }
+    public class Scores
+    {
+        public int Score;
+        public int Mode;
+    }
+    public partial class Form1 : Form
+    {
+        Bitmap off;
+        const int N = 5;
+        const int M = 1;
+        int eX, eY;
+        CActor[,] B = new CActor[M, N];
+        List<CActor> Blocks = new List<CActor>();
+        List<CActor> Body = new List<CActor>();
+        Random BlockValue = new Random();
+        Random BodyValue = new Random();
+        Random BlockRNG = new Random();
+        Random BlockColor = new Random();
+        public int CF = 1,IS=1,Counttick,Score,HighScore,Game=0;
+        List<Snake> Snake = new List<Snake>();
+        List<Scores> Scores = new List<Scores>();
+        List<Button> Buttons = new List<Button>();
+        Timer TT = new Timer();
+        bool Right = false, Left = false, Down = false, Up = false,PowerUp=false;
+        public Form1()
+        {
+            Text = "Snake VS Blocks";
+            this.WindowState = FormWindowState.Maximized;
+            this.Load += new EventHandler (Form1_Load);
+            this.Paint += new PaintEventHandler(Form1_Paint);
+            this.KeyDown += new KeyEventHandler(Form1_KeyDown);
+            this.KeyUp += new KeyEventHandler(Form1_KeyUp);
+            this.MouseDown += new MouseEventHandler(Form1_MouseDown);
+            this.MouseMove += new MouseEventHandler(Form1_MouseMove);
+            TT.Tick += new EventHandler(TT_Tick);
+            TT.Start();
+            TT.Interval = 10;
+        }
+
+        private void Form1_MouseMove(object sender, MouseEventArgs e)
+        {
+            eX = e.X;
+            eY = e.Y;
+            IsHit();
+        }
+            
+        private void Form1_MouseDown(object sender, MouseEventArgs e)
+        {
+            if(e.X >= Buttons[1].X && e.X <= Buttons[1].X + Buttons[1].W
+                && e.Y >= Buttons[1].Y && e.Y <= Buttons[1].Y + Buttons[1].H && Buttons[1].Active == true)
+            {
+                Game = 1;
+                Snake.Clear();
+                Blocks.Clear();
+                Body.Clear();
+                CreateSnake();
+                Buttons[1].Active = false;
+                Buttons[2].Active = false;
+                TT.Start();
+            }
+            if (e.X >= Buttons[0].X && e.X <= Buttons[0].X + Buttons[0].W
+                && e.Y >= Buttons[0].Y && e.Y <= Buttons[0].Y + Buttons[0].H && Buttons[0].Active == true)
+            {
+                Game = 1;
+                Snake.Clear();
+                Blocks.Clear();
+                Body.Clear();
+                CreateSnake();
+                Buttons[0].Active = false;
+                TT.Start();
+            }
+            if (e.X >= Buttons[2].X && e.X <= Buttons[2].X + Buttons[2].W
+                && e.Y >= Buttons[2].Y && e.Y <= Buttons[2].Y + Buttons[2].H && Buttons[2].Active == true)
+            {
+                Game = 0;
+                Snake.Clear();
+                Blocks.Clear();
+                Body.Clear();
+                Buttons[1].Active = false;
+                Buttons[2].Active = false;
+                Buttons[0].Active = true;
+                TT.Start();
+            }
+        }
+
+        private void Form1_KeyUp(object sender, KeyEventArgs e)
+        {
+            Right = false;
+            Left = false;
+        }
+        private void TT_Tick(object sender, EventArgs e)
+        {
+            if (Game == 1)
+            {
+                if(Score > HighScore)
+                {
+                    HighScore = Score;
+                }
+                GameOver();
+                if (Right == true && Snake[0].X <= this.ClientSize.Width * 7 / 10 - Snake[0].W)
+                {
+                    Snake[0].X += 15;
+                    Snake[0].Left = false;
+                }
+                if (Left == true && Snake[0].X >= this.ClientSize.Width * 3 / 10)
+                {
+                    Snake[0].X -= 15;
+                    Snake[0].Right = false;
+                }
+                for (int i = 0; i < Blocks.Count; i++)
+                {
+                    if (IsHit() == 0)
+                    {
+                        Blocks[i].Y += 30;
+                    }
+                }
+                for (int i = 0; i < Body.Count; i++)
+                {
+                    Body[i].Y += 30;
+                }
+                if (Counttick % 20 == 0 && IsHit() == 0)
+                {
+                    CreateBlock();
+                }
+                if (Snake.Count > 1)
+                {
+                    if (Snake[IS - 1].X > Snake[IS].X)
+                    {
+                        Snake[IS].X += 15;
+                    }
+                    if (Snake[IS - 1].X < Snake[IS].X)
+                    {
+                        Snake[IS].X -= 15;
+                    }
+                }
+                if (Snake.Count >= 6)
+                {
+                    if (IS < 6)
+                    {
+                        IS++;
+                    }
+                    if (IS >= 6)
+                    {
+                        IS = 1;
+                    }
+                }
+                if (Snake.Count < 6)
+                {
+                    if (IS < Snake.Count)
+                    {
+                        IS++;
+                    }
+                    if (IS > Snake.Count - 1)
+                    {
+                        IS = 1;
+                    }
+                }
+            }
+            this.Text = "" + IS;
+            Counttick++;
+            IsHover();
+            IsHitBody();
+            IsHit();
+            Remover();
+            DrawDubb(this.CreateGraphics());
+        }
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Right)
+            {
+                Right = true;
+                Left = false;
+            }
+            if (e.KeyCode == Keys.Left)
+            {
+                Right = false;
+                Left = true;
+            }
+            if (e.KeyCode == Keys.R)
+            {
+                MessageBox.Show("" + Snake.Count);
+            }
+        }
+        void IsHover()
+        {
+            if (eX >= Buttons[0].X && eX <= Buttons[0].X + Buttons[0].W
+                && eY >= Buttons[0].Y && eY <= Buttons[0].Y + Buttons[0].H)
+            {
+                Buttons[0].Im = new Bitmap("Play2.png");
+            }
+            else
+            {
+                Buttons[0].Im = new Bitmap("Play.png");
+            }
+            if (eX >= Buttons[1].X && eX <= Buttons[1].X + Buttons[1].W
+                && eY >= Buttons[1].Y && eY <= Buttons[1].Y + Buttons[1].H)
+            {
+                Buttons[1].Im = new Bitmap("Retry2.png");
+            }
+            else
+            {
+                Buttons[1].Im = new Bitmap("Retry.png");
+            }
+            if (eX >= Buttons[2].X && eX <= Buttons[2].X + Buttons[2].W
+                && eY >= Buttons[2].Y && eY <= Buttons[2].Y + Buttons[2].H)
+            {
+                Buttons[2].Im = new Bitmap("Exit2.png");
+            }
+            else
+            {
+                Buttons[2].Im = new Bitmap("Exit.png");
+            }
+        }
+        void GameOver()
+        {
+            if(Snake.Count <= 1)
+            {
+                TT.Stop();
+                Buttons[1].Active = true;
+                Buttons[2].Active = true;
+                Game = 2;
+                Score = 0;
+            }
+        }
+        void Remover()
+        {
+            for(int i=0;i<Body.Count;i++)
+            {
+                if(Body[i].Y >= this.ClientSize.Height)
+                {
+                    Body.RemoveAt(i);
+                }
+            }
+            for (int i = 0; i < Blocks.Count; i++)
+            {
+                if (Blocks[i].Y >= this.ClientSize.Height)
+                {
+                    Blocks.RemoveAt(i);
+                }
+            }
+        }
+        int IsHit()
+        {
+            for(int i=0;i<Blocks.Count;i++)
+            {
+                if(Snake[0].X >= Blocks[i].X  && Snake[0].X <= Blocks[i].X + Blocks[i].W
+                    && Snake[0].Y <= Blocks[i].Y + Blocks[i].H && Snake[0].Y + Snake[0].H >= Blocks[i].Y)
+                {
+                    if (Snake.Count - 1 >= 1)
+                    {
+                        Snake.RemoveAt(Snake.Count - 1);
+                        IS = 1;
+                    }
+                    Blocks[i].Value--;
+                    Score++;
+                    if (Blocks[i].Value <= 0)
+                    {
+                        Blocks.RemoveAt(i);
+                    }
+                    return 1;
+                }
+            }
+            return 0;
+        }
+        void IsHitBody()
+        {
+            for (int i = 0; i < Body.Count; i++)
+            {
+                if (Snake[0].X+Snake[0].W >= Body[i].X && Snake[0].X <= Body[i].X + Body[i].W
+                    && Snake[0].Y <= Body[i].Y + Body[i].H && Snake[0].Y + Snake[0].H >= Body[i].Y)
+                {
+                    UpdateSnake(Body[i].Value);
+                    Body.RemoveAt(i);
+                }
+            }
+        }
+        void UpdateSnake(int N)
+        {
+            for (int i = 0; i < N; i++)
+            {
+                Snake pnn = new Snake();
+                pnn.Im = new Bitmap("Body.png");
+                pnn.X = Snake[Snake.Count-1].X;
+                pnn.Y = Snake[Snake.Count-1].Y + Snake[0].H;
+                pnn.W = pnn.Im.Width;
+                pnn.H = pnn.Im.Height;
+                Snake.Add(pnn);
+            }
+        }
+        void Create()
+        {
+            int ax = this.ClientSize.Width * 3 / 10;
+            int ay = 0;
+            for (int r = 0; r < M; r++)
+            {
+                ax = this.ClientSize.Width * 3 / 10;
+                for (int c = 0; c < N; c++)
+                {
+                    CActor pnn = new CActor();
+                    pnn.X = ax;
+                    pnn.Y = ay;
+                    pnn.W = (this.ClientSize.Width * 7 / 10 - this.ClientSize.Width * 3 / 10) / 5;
+                    pnn.H = pnn.W;
+                    CF *= -1;
+                    ax += pnn.W;
+                    B[r, c] = pnn;
+                }
+                ay += (this.ClientSize.Width * 7 / 10 - this.ClientSize.Width * 3 / 10) / 5;
+            }
+        }
+        void CreateBlock()
+        {
+            for(int c=0;c<N;c++)
+            {
+                int R = BlockRNG.Next(0, 2);
+                int RB = BlockRNG.Next(0, 2);
+                if (R == 1)
+                {
+                    CActor pnn = new CActor();
+                    pnn.W = B[0, 0].W;
+                    pnn.H = B[0, 0].W;
+                    pnn.X = B[0, c].X;
+                    pnn.Y = 0 - pnn.H;
+                    pnn.Value = BlockValue.Next(1, Snake.Count * 2);
+                    pnn.clr = Color.FromArgb(BlockColor.Next(0, 255), BlockColor.Next(0, 255), BlockColor.Next(0, 255));
+                    Blocks.Add(pnn);
+                }
+                if (R == 0)
+                {
+                    if(RB==1)
+                    {
+                        CActor pnn = new CActor();
+                        pnn.Im = new Bitmap("Body.png");
+                        pnn.W = pnn.Im.Width;
+                        pnn.H = pnn.Im.Height;
+                        pnn.Value = BodyValue.Next(1, 6);
+                        pnn.X = B[0, c].X + B[0, c].W / 2 - pnn.W / 2;
+                        pnn.Y = B[0, c].Y + B[0, c].H / 2;
+                        Body.Add(pnn);
+                    }
+                }
+            }
+        }
+        void CreateButtons()
+        {
+            for(int i=0;i<4;i++)
+            {
+                Button pnn = new Button();
+                if (i == 0)
+                {
+                    pnn.Im = new Bitmap("Play.png");
+                    pnn.W = pnn.Im.Width / 4;
+                    pnn.H = pnn.Im.Height / 4;
+                    pnn.Active = true;
+                    pnn.X = this.ClientSize.Width / 2 - pnn.W / 2;
+                    pnn.Y = this.ClientSize.Height / 2 + pnn.H / 2;
+                }
+                if (i == 1)
+                {
+                    pnn.Im = new Bitmap("Retry.png");
+                    pnn.W = pnn.Im.Width / 4;
+                    pnn.H = pnn.Im.Height / 4;
+                    pnn.X = this.ClientSize.Width / 2 + pnn.W - 60;
+                    pnn.Y = this.ClientSize.Height / 2 - pnn.H/2;
+                }
+                if (i == 2)
+                {
+                    pnn.Im = new Bitmap("Exit.png");
+                    pnn.W = pnn.Im.Width / 4;
+                    pnn.H = pnn.Im.Height / 4;
+                    pnn.X = this.ClientSize.Width / 2 - pnn.W - 60;
+                    pnn.Y = this.ClientSize.Height / 2 - pnn.H/2;
+                }
+                if (i == 3)
+                {
+                    pnn.Im = new Bitmap("Logo.png");
+                    pnn.W = pnn.Im.Width;
+                    pnn.H = pnn.Im.Height;
+                    pnn.Active = false;
+                    pnn.X = 100;
+                    pnn.Y = this.ClientSize.Height / 2;
+                }
+                Buttons.Add(pnn);
+            }
+        }
+        void CreateSnake()
+        {
+            for(int i= 0;i<7;i++)
+            {
+                Snake pnn = new Snake();
+                pnn.Im = new Bitmap("Body.png");
+                pnn.W = pnn.Im.Width;
+                pnn.H = pnn.Im.Height;
+                pnn.X = this.ClientSize.Width / 2 - pnn.W / 2;
+                pnn.Y = this.ClientSize.Height * 6 / 7 + (i * pnn.H);
+                Snake.Add(pnn);
+            }
+        }
+        private void Form1_Paint(object sender, PaintEventArgs e)
+        {
+            DrawDubb(e.Graphics);
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            off = new Bitmap(ClientSize.Width, ClientSize.Height);
+            CreateSnake();
+            Create();
+            CreateButtons();
+        }
+        
+        void DrawScene(Graphics g)
+        {
+            g.Clear(Color.FromArgb(60,60,60));
+            if(Game==0)
+            {
+                g.DrawImage(Buttons[0].Im, Buttons[0].X, Buttons[0].Y, Buttons[0].W, Buttons[0].H);
+                g.DrawImage(Buttons[3].Im, this.ClientSize.Width / 2 - Buttons[3].W / 2, this.ClientSize.Height*5 / 8 - Buttons[3].H * 2, Buttons[3].W, Buttons[3].H);
+            }
+            Pen pp = new Pen(Color.White, 5);
+            for (int r = 0; r < M; r++)
+            {
+                for (int c = 0; c < N; c++)
+                {
+                    g.FillRectangle(new SolidBrush(B[r, c].clr), B[r, c].X, B[r, c].Y, B[r, c].W, B[r, c].H);
+                }
+            }
+            for (int i = 0; i < Blocks.Count; i++)
+            {
+                FontFamily F1 = new FontFamily("Arial");
+                Font FF1 = new Font(F1, 24, FontStyle.Regular);
+                g.FillRectangle(new SolidBrush(Blocks[i].clr), Blocks[i].X, Blocks[i].Y, Blocks[i].W, Blocks[i].H);
+                g.DrawString("" + (Blocks[i].Value), FF1, Brushes.White, Blocks[i].X, Blocks[i].Y);
+            }
+            for (int i = 0; i < Body.Count; i++)
+            {
+                FontFamily F1 = new FontFamily("Arial");
+                Font FF1 = new Font(F1, 14, FontStyle.Regular);
+                g.DrawImage(Body[i].Im, Body[i].X, Body[i].Y, Body[i].W, Body[i].H);
+                g.DrawString("" + (Body[i].Value), FF1, Brushes.White, Body[i].X + Body[i].W, Body[i].Y);
+            }
+            FontFamily F = new FontFamily("Arial");
+            Font FF = new Font(F, 16, FontStyle.Regular);
+            g.DrawString("Score: " + Score, FF, Brushes.White, 0, 30);
+            g.DrawString("High Score: " + HighScore, FF, Brushes.White, 0, 0);
+            g.DrawLine(pp, this.ClientSize.Width * 3 / 10, 0, this.ClientSize.Width * 3 / 10, this.ClientSize.Height);
+            g.DrawLine(pp, this.ClientSize.Width * 7 / 10, 0, this.ClientSize.Width * 7 / 10, this.ClientSize.Height);
+            if (Game == 1)
+            {
+                for (int i = 0; i < Snake.Count; i++)
+                {
+                    if (PowerUp == false)
+                    {
+                        g.DrawImage(Snake[i].Im, Snake[i].X, Snake[i].Y, Snake[i].W, Snake[i].H);
+                    }
+                }
+                g.DrawString("" + (Snake.Count - 1), FF, Brushes.White, Snake[0].X + Snake[0].W, Snake[0].Y);
+            }
+            if (Game == 2)
+            {
+                for (int i = 1; i < 3; i++)
+                {
+                    g.DrawImage(Buttons[i].Im, Buttons[i].X, Buttons[i].Y, Buttons[i].W, Buttons[i].H);
+                }
+            }
+        }
+        void DrawDubb(Graphics g)
+        {
+            Graphics g2 = Graphics.FromImage(off);
+            DrawScene(g2);
+            g.DrawImage(off, 0, 0);
+        }
+    }
+}

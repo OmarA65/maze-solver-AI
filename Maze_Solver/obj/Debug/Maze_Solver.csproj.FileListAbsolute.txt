@@ -1,0 +1,18 @@
+C:\Users\Dell\source\repos\Snake\Snake\bin\Debug\Snake.exe.config
+C:\Users\Dell\source\repos\Snake\Snake\bin\Debug\Snake.exe
+C:\Users\Dell\source\repos\Snake\Snake\bin\Debug\Snake.pdb
+C:\Users\Dell\source\repos\Snake\Snake\obj\Debug\Snake.csprojAssemblyReference.cache
+C:\Users\Dell\source\repos\Snake\Snake\obj\Debug\Snake.Properties.Resources.resources
+C:\Users\Dell\source\repos\Snake\Snake\obj\Debug\Snake.csproj.GenerateResource.cache
+C:\Users\Dell\source\repos\Snake\Snake\obj\Debug\Snake.csproj.CoreCompileInputs.cache
+C:\Users\Dell\source\repos\Snake\Snake\obj\Debug\Snake.exe
+C:\Users\Dell\source\repos\Snake\Snake\obj\Debug\Snake.pdb
+E:\College\-CS Sem 5\-CS316 AI\Maze_Solver\Maze_Solver\bin\Debug\Snake.exe.config
+E:\College\-CS Sem 5\-CS316 AI\Maze_Solver\Maze_Solver\bin\Debug\Snake.exe
+E:\College\-CS Sem 5\-CS316 AI\Maze_Solver\Maze_Solver\bin\Debug\Snake.pdb
+E:\College\-CS Sem 5\-CS316 AI\Maze_Solver\Maze_Solver\obj\Debug\Maze_Solver.csprojAssemblyReference.cache
+E:\College\-CS Sem 5\-CS316 AI\Maze_Solver\Maze_Solver\obj\Debug\Snake.Properties.Resources.resources
+E:\College\-CS Sem 5\-CS316 AI\Maze_Solver\Maze_Solver\obj\Debug\Maze_Solver.csproj.GenerateResource.cache
+E:\College\-CS Sem 5\-CS316 AI\Maze_Solver\Maze_Solver\obj\Debug\Maze_Solver.csproj.CoreCompileInputs.cache
+E:\College\-CS Sem 5\-CS316 AI\Maze_Solver\Maze_Solver\obj\Debug\Snake.exe
+E:\College\-CS Sem 5\-CS316 AI\Maze_Solver\Maze_Solver\obj\Debug\Snake.pdb

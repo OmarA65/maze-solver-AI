@@ -1,0 +1,8 @@
+C:\Users\Dell\source\repos\Snake\Snake\bin\Release\Snake.exe.config
+C:\Users\Dell\source\repos\Snake\Snake\bin\Release\Snake.exe
+C:\Users\Dell\source\repos\Snake\Snake\bin\Release\Snake.pdb
+C:\Users\Dell\source\repos\Snake\Snake\obj\Release\Snake.Properties.Resources.resources
+C:\Users\Dell\source\repos\Snake\Snake\obj\Release\Snake.csproj.GenerateResource.cache
+C:\Users\Dell\source\repos\Snake\Snake\obj\Release\Snake.csproj.CoreCompileInputs.cache
+C:\Users\Dell\source\repos\Snake\Snake\obj\Release\Snake.exe
+C:\Users\Dell\source\repos\Snake\Snake\obj\Release\Snake.pdb

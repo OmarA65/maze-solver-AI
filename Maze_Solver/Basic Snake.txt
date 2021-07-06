@@ -1,0 +1,325 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace Snake
+{
+    public class CActor
+    {
+        public int X, Y;
+        public int W, H;
+        public Color clr;
+    }
+    public class Apple
+    {
+        public int X, Y;
+        public int W, H;
+        public int R, C;
+        public Bitmap Im;
+    }
+    public class Snake
+    {
+        public int X, Y;
+        public int Xold, Yold;
+        public int R, C;
+        public int W, H;
+        public Bitmap Im;
+        public int Type = 0;
+    }
+    public partial class Form1 : Form
+    {
+        Bitmap off;
+        const int N = 11;
+        Random RR = new Random();
+        Random RC = new Random();
+        Apple Apple = new Apple();
+        int CF = 1;
+        CActor[,] B = new CActor[N, N];
+        List<Snake> Snake = new List<Snake>();
+        Timer TT = new Timer();
+        bool Right = true, Left = false, Down = false, Up = false;
+        char LastMove,CurrentMove;
+
+        public Form1()
+        {
+            this.WindowState = FormWindowState.Maximized;
+            this.Load += new EventHandler (Form1_Load);
+            this.Paint += new PaintEventHandler(Form1_Paint);
+            this.KeyDown += new KeyEventHandler(Form1_KeyDown);
+            TT.Tick += new EventHandler(TT_Tick);
+            TT.Start();
+            
+        }
+
+        private void TT_Tick(object sender, EventArgs e)
+        {
+            MoveSnake();
+            if (Right == true)
+            {
+                CurrentMove = 'R';
+                Snake[0].C++;
+                Snake[0].X = B[Snake[0].R, Snake[0].C].X;
+                Snake[0].Im = new Bitmap("0.png");
+            }
+            if (Left == true)
+            {
+                CurrentMove = 'L';
+                Snake[0].C--;
+                Snake[0].X = B[Snake[0].R, Snake[0].C].X;
+                Snake[0].Im = new Bitmap("1.png");
+            }
+            if (Up == true)
+            {
+                CurrentMove = 'U';
+                Snake[0].R--;
+                Snake[0].Y = B[Snake[0].R, Snake[0].C].Y;
+                Snake[0].Im = new Bitmap("3.png");
+            }
+            if (Down == true)
+            {
+                CurrentMove = 'D';
+                Snake[0].R++;
+                Snake[0].Y = B[Snake[0].R, Snake[0].C].Y;
+                Snake[0].Im = new Bitmap("2.png");
+            }
+            if(CurrentMove == 'R' && LastMove == 'R')
+            {
+                Snake[1].Im = new Bitmap("4.png");
+            }
+            if (CurrentMove == 'R' && LastMove == 'U')
+            {
+                Snake[1].Im = new Bitmap("9.png");
+            }
+            if (CurrentMove == 'R' && LastMove == 'D')
+            {
+                Snake[1].Im = new Bitmap("7.png");
+            }
+            if (CurrentMove == 'L' && LastMove == 'L')
+            {
+                Snake[1].Im = new Bitmap("4.png");
+            }
+            if (CurrentMove == 'L' && LastMove == 'U')
+            {
+                Snake[1].Im = new Bitmap("8.png");
+            }
+            if (CurrentMove == 'L' && LastMove == 'D')
+            {
+                Snake[1].Im = new Bitmap("6.png");
+            }
+            if (CurrentMove == 'D' && LastMove == 'D')
+            {
+                Snake[1].Im = new Bitmap("5.png");
+            }
+            if (CurrentMove == 'D' && LastMove == 'R')
+            {
+                Snake[1].Im = new Bitmap("8.png");
+            }
+            if (CurrentMove == 'D' && LastMove == 'L')
+            {
+                Snake[1].Im = new Bitmap("9.png");
+            }
+            if (CurrentMove == 'U' && LastMove == 'U')
+            {
+                Snake[1].Im = new Bitmap("5.png");
+            }
+            if (CurrentMove == 'U' && LastMove == 'R')
+            {
+                Snake[1].Im = new Bitmap("6.png");
+            }
+            if (CurrentMove == 'U' && LastMove == 'L')
+            {
+                Snake[1].Im = new Bitmap("7.png");
+            }
+            if (Snake[0].R == Apple.R && Snake[0].C == Apple.C)
+            {
+                UpdateSnakeBody();
+                CreateApple();
+            }
+            DrawDubb(this.CreateGraphics());
+            if(Right == true)
+            {
+                LastMove = 'R';
+            }
+            if (Left == true)
+            {
+                LastMove = 'L';
+            }
+            if (Up == true)
+            {
+                LastMove = 'U';
+            }
+            if (Down == true)
+            {
+                LastMove = 'D';
+            }
+        }
+
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Right && Left == false) 
+            {
+                Right = true;
+                Left = false;
+                Up = false;
+                Down = false;
+            }
+            if (e.KeyCode == Keys.Left && Right == false)
+            {
+                Right = false;
+                Left = true;
+                Up = false;
+                Down = false;
+            }
+            if (e.KeyCode == Keys.Up && Down == false)
+            {
+                Right = false;
+                Left = false;
+                Up = true;
+                Down = false;
+            }
+            if (e.KeyCode == Keys.Down && Up == false)
+            {
+                Right = false;
+                Left = false;
+                Up = false;
+                Down = true;
+            }
+            Apple.Im = new Bitmap("Apple.png");
+        }
+
+        void MoveSnake()
+        {
+            for (int i = Snake.Count - 1; i > 0; i--)
+            {
+                Snake[i].X = Snake[i - 1].X;
+                Snake[i].Y = Snake[i - 1].Y;
+            }
+            for (int i = Snake.Count - 2; i > 1; i--)
+            {
+                Snake[i].Im = Snake[i - 1].Im;
+            }
+        }
+        void UpdateSnakeBody()
+        {
+            Snake pnn = new Snake();
+            pnn.X = Snake[Snake.Count - 1].X;
+            pnn.Y = Snake[Snake.Count - 1].Y;
+            Snake[Snake.Count - 1].Im = new Bitmap("4.png");
+            pnn.Im = new Bitmap("10.png");
+            Snake.Add(pnn);
+
+        }
+        void CreateApple()
+        {
+            Apple.R = RR.Next(1, 11);
+            Apple.C = RR.Next(1, 11);
+            Apple.X = B[Apple.R, Apple.C].X;
+            Apple.Y = B[Apple.R, Apple.C].Y;
+        }
+        void CreateSnake()
+        {
+            for(int i=0;i<3;i++)
+            {
+                Snake pnn = new Snake();
+                if (i == 0)
+                {
+                    pnn.R = 7;
+                    pnn.C = 2;
+                    pnn.X = B[pnn.R, pnn.C].X;
+                    pnn.Y = B[pnn.R, pnn.C].Y;
+                    pnn.Im = new Bitmap("0.png");
+                }
+                if (i == 1)
+                {
+                    pnn.R = 7;
+                    pnn.C = 1;
+                    pnn.X = B[pnn.R, pnn.C].X;
+                    pnn.Y = B[pnn.R, pnn.C].Y;
+                    pnn.Im = new Bitmap("4.png");
+                }
+                if (i == 2)
+                {
+                    pnn.R = 7;
+                    pnn.C = 0;
+                    pnn.X = B[pnn.R, pnn.C].X;
+                    pnn.Y = B[pnn.R, pnn.C].Y;
+                    pnn.Im = new Bitmap("10.png");
+                }
+                Snake.Add(pnn);
+            }
+        }
+        void Create()
+        {
+            int ax = 0;
+            int ay = 0;
+            for (int r = 0; r < N; r++)
+            {
+                ax = 0;
+                for (int c = 0; c < N; c++)
+                {
+                    CActor pnn = new CActor();
+                    pnn.X = ax;
+                    pnn.Y = ay;
+                    pnn.W = this.ClientSize.Height/11;
+                    pnn.H = this.ClientSize.Height/11;
+                    CF *= -1;
+                    if(CF == 1)
+                    {
+                        pnn.clr = Color.Green;
+                    }
+                    if (CF == -1)
+                    {
+                        pnn.clr = Color.LightGreen;
+                    }
+                    ax += pnn.W;
+                    B[r, c] = pnn;
+                }
+                ay += this.ClientSize.Height / 11;
+            }
+        }
+        private void Form1_Paint(object sender, PaintEventArgs e)
+        {
+            DrawDubb(e.Graphics);
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            off = new Bitmap(ClientSize.Width, ClientSize.Height);
+            Create();
+            CreateApple();
+            CreateSnake();
+        }
+        void DrawScene(Graphics g)
+        {
+            g.Clear(Color.Black);
+
+            for (int r = 0; r < N; r++)
+            {
+                for (int c = 0; c < N; c++)
+                {
+                    g.DrawRectangle(new Pen(Color.White, 2),
+                                    B[r, c].X, B[r, c].Y, B[r, c].W, B[r, c].H);
+                    g.FillRectangle(new SolidBrush(B[r,c].clr), B[r, c].X, B[r, c].Y, B[r, c].W, B[r, c].H);
+                }
+
+            }
+            g.DrawImage(Apple.Im = new Bitmap("Apple.png"), Apple.X, Apple.Y, B[0, 0].W, B[0, 0].H);
+            for (int i=0;i<Snake.Count;i++)
+            {
+                g.DrawImage(Snake[i].Im,Snake[i].X,Snake[i].Y,B[0,0].W,B[0,0].H);
+            }
+        }
+        void DrawDubb(Graphics g)
+        {
+            Graphics g2 = Graphics.FromImage(off);
+            DrawScene(g2);
+            g.DrawImage(off, 0, 0);
+        }
+    }
+}
